@@ -1,0 +1,28 @@
+version: "3.4"
+services:
+  database_container:
+    image: mysql
+    container_name: "database_container"
+    environment:
+      - MYSQL_DATABASE=Movies
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=pacososa
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    ports:
+      - "3018:3306"
+    volumes:
+      - "database_vol:/var/lib/mysql"
+  dockertraining_compose_francisco_sosa_v1:
+    image: ${DOCKER_REGISTRY-}dockertrainingcomposefranciscososa
+    container_name: "api_container"
+    build:
+      context: .
+      dockerfile: dockertraining_compose_francisco_sosa_v1/Dockerfile
+    ports:
+      - "8091:80"
+    environment:
+      - ConnectionStrings:Movies=Server=database_container;Port=3306;Database=Movies; Uid=admin; Pwd=pacososa
+    depends_on:
+      - database_container
+volumes:
+  database_vol:
